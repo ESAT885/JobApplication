@@ -31,12 +31,54 @@ namespace JobApplicationLibrary.UnitTest
             
         }
         [Test]
-        public void Application_WithValidAge_TransferredToAutoAccepted()
+        public void Application_WithNoTechStack_TransferredToAutoRejected()
         {
             //Arrange
+            var evaluator = new ApplicationEvaluator();
+            var form = new JobApplication
+            {
+                Application = new Application
+                {
+                    IdentityNumber = "11",
+                    Age = 25
+                },
+                TechStackList= new List<string>
+                {
+                    "C#" 
+                }
+            };
 
+            //Action
+            var appResult = evaluator.EvaluateApplication(form);
+            // Assert
+            Assert.That(appResult, Is.EqualTo(ApplicationResult.AutoRejected));
 
         }
-      
+        [Test]
+        public void Application_WithTechStackOver75P_TransferredToAutoAccepted()
+        {
+            //Arrange
+            var evaluator = new ApplicationEvaluator();
+            var form = new JobApplication
+            {
+                Application = new Application
+                {
+                    IdentityNumber="11",
+                    Age = 25
+                },
+                TechStackList = new List<string>
+                {
+                    "C#", "RabbitMQ", "Mcroservice", "Visual Studio"
+                },
+                YearsOfExperience= 19
+            };
+
+            //Action
+            var appResult = evaluator.EvaluateApplication(form);
+            // Assert
+            Assert.That(appResult, Is.EqualTo(ApplicationResult.AutoAccepted));
+
+        }
+
     }
 }
