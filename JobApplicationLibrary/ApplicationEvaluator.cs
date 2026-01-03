@@ -12,10 +12,10 @@ namespace JobApplicationLibrary
         private const int MinAge = 18;
         private const int autoAcceptedYearsOfExperience = 15;
         public List<string> techStackList = new() { "C#", "RabbitMQ", "Mcroservice", "Visual Studio" };
-        private IdentityValidator identityValidator;
-        public ApplicationEvaluator()
+        private IIdentityValidator identityValidator;
+        public ApplicationEvaluator(IIdentityValidator identityValidator)
         {
-            identityValidator= new IdentityValidator();
+            this.identityValidator = identityValidator;
         }
         public ApplicationResult EvaluateApplication(Models.JobApplication form)
         {
