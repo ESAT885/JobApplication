@@ -17,6 +17,7 @@ namespace JobApplicationLibrary.UnitTest
             var evaluator = new ApplicationEvaluator(null);
             var form = new JobApplication
             {
+               
                 Application = new Application
                 {
                     Age = 17
@@ -34,14 +35,19 @@ namespace JobApplicationLibrary.UnitTest
         {
             //Arrange
             var mockvalidator = new Mock<IIdentityValidator>();
+            mockvalidator.DefaultValue=DefaultValue.Mock;
+            mockvalidator.Setup(x => x.countryDataProvider.CountryData.Country).Returns("Turkey");
             mockvalidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
             var evaluator = new ApplicationEvaluator(mockvalidator.Object);
             var form = new JobApplication
             {
+                
                 Application = new Application
                 {
+                    
                     IdentityNumber = "11",
-                    Age = 25
+                    Age = 25,
+                    
                 },
                 TechStackList= new List<string>
                 {
@@ -61,12 +67,16 @@ namespace JobApplicationLibrary.UnitTest
             //Arrange
             var mockvalidator = new Mock<IIdentityValidator>();
             mockvalidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(true);
+            mockvalidator.DefaultValue = DefaultValue.Mock;
+            mockvalidator.Setup(x => x.countryDataProvider.CountryData.Country).Returns("Turkey");
             var evaluator = new ApplicationEvaluator(mockvalidator.Object);
             var form = new JobApplication
             {
+              
                 Application = new Application
                 {
-                    IdentityNumber="11",
+                    
+                    IdentityNumber ="11",
                     Age = 25
                 },
                 TechStackList = new List<string>
@@ -82,6 +92,67 @@ namespace JobApplicationLibrary.UnitTest
             Assert.That(appResult, Is.EqualTo(ApplicationResult.AutoAccepted));
 
         }
+        [Test]
+        public void Application_WithInvalidIdentityNumber_TransferredToHR()
+        {
+            //Arrange
+            var mockvalidator = new Mock<IIdentityValidator>(MockBehavior.Loose);
+            mockvalidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
+            mockvalidator.DefaultValue = DefaultValue.Mock;
+            mockvalidator.Setup(x => x.countryDataProvider.CountryData.Country).Returns("Turkey");
+            var evaluator = new ApplicationEvaluator(mockvalidator.Object);
+            var form = new JobApplication
+            {
+              
+                Application = new Application
+                {
+                   
+                    IdentityNumber = "11",
+                    Age = 25
+                },
+                TechStackList = new List<string>
+                {
+                    "C#", "RabbitMQ", "Mcroservice", "Visual Studio"
+                },
+                YearsOfExperience = 19
+            };
 
+            //Action
+            var appResult = evaluator.EvaluateApplication(form);
+            // Assert
+            Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToHR));
+
+        }
+        [Test]
+        public void Application_WithOfficeLocation_TransferredToCTO()
+        {
+            //Arrange
+            var mockvalidator = new Mock<IIdentityValidator>(MockBehavior.Loose);
+            mockvalidator.Setup(i => i.countryDataProvider.CountryData.Country).Returns("Germany");
+            
+          
+            var evaluator = new ApplicationEvaluator(mockvalidator.Object);
+            var form = new JobApplication
+            {
+                
+                Application = new Application
+                {
+
+                    IdentityNumber = "11",
+                    Age = 25
+                },
+                TechStackList = new List<string>
+                {
+                    "C#", "RabbitMQ", "Mcroservice", "Visual Studio"
+                },
+                YearsOfExperience = 19
+            };
+
+            //Action
+            var appResult = evaluator.EvaluateApplication(form);
+            // Assert
+            Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToCTO));
+
+        }
     }
 }

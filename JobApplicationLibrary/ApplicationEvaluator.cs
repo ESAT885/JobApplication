@@ -23,6 +23,11 @@ namespace JobApplicationLibrary
             {
                 return ApplicationResult.AutoRejected;
             }
+            if (identityValidator.countryDataProvider.CountryData.Country != "Turkey")
+            {
+                return ApplicationResult.TransferredToCTO;
+            }
+            var connectionSucces=identityValidator.CheckConnectionToRemoteServer();
             var validIdentity = identityValidator.IsValid(form.Application.IdentityNumber);
 
             if (!validIdentity)

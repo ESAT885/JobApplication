@@ -11,5 +11,12 @@ namespace JobApplicationLibrary.Models
         public Application Application { get; set; }
         public int YearsOfExperience { get; set; }
         public List<string> TechStackList { get; set; }
+       public Validation ValidationMode { get; set; }
+
+    }
+    public enum Validation
+    {
+       Detailed,
+       Quick
     }
 }

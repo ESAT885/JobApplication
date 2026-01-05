@@ -8,6 +8,13 @@ namespace JobApplicationLibrary.Services
 {
     public class IdentityValidator: IIdentityValidator
     {
+        public ICountryDataProvider countryDataProvider => throw new NotImplementedException();
+
+        public bool CheckConnectionToRemoteServer()
+        {
+            return true;
+        }
+
         public bool IsValid(string identityNumber)
         {
             return true;
