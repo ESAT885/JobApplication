@@ -10,8 +10,13 @@ namespace JobApplicationLibrary.Services
     {
         public bool IsValid(string identityNumber);
         public bool CheckConnectionToRemoteServer();
-
-        ICountryDataProvider countryDataProvider { get; }   
+        ICountryDataProvider countryDataProvider { get; }
+        public ValidationMode ValidationMode { get; set; }
+    }
+    public enum ValidationMode
+    {
+        Quick,
+        Detailed
     }
     public interface ICountryData
     {
